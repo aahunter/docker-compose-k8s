@@ -1,0 +1,12 @@
+syntax: glob
+
+*.pyc
+*.log
+*.pid
+*.fa
+*.swp
+.version
+
+tmp/
+log/
+build/

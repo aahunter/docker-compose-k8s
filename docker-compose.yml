@@ -1,0 +1,45 @@
+etcd:
+  image: quay.io/coreos/etcd:v3.0.10
+  net: host
+  command: ['/usr/local/bin/etcd', '-advertise-client-urls=http://0.0.0.0:2379', '-listen-client-urls=http://0.0.0.0:2379', '--data-dir=/var/etcd/data']
+
+apiserver:
+  image: gcr.io/google_containers/hyperkube:v1.3.7
+  net: host
+  privileged: true
+  command: ["/hyperkube", "apiserver", "--service-cluster-ip-range=172.17.17.1/24", "--insecure-bind-address=0.0.0.0", "--etcd_servers=http://127.0.0.1:2379", "--v=2"]
+
+controller:
+  image: gcr.io/google_containers/hyperkube:v1.3.7
+  net: host
+  command: ["/hyperkube", "controller-manager", "--master=127.0.0.1:8080", "--v=2"]
+
+scheduler:
+  image: gcr.io/google_containers/hyperkube:v1.3.7
+  net: host
+  command: ["/hyperkube", "scheduler", "--master=127.0.0.1:8080", "--v=2"]
+
+kubelet:
+  image: gcr.io/google_containers/hyperkube:v1.3.7
+  net: host
+  pid: host
+  privileged: true
+  command: ['/hyperkube', 'kubelet', '--api_servers=http://127.0.0.1:8080', '--v=2', '--address=0.0.0.0', '--enable_server']
+  volumes:
+    - /var/lib/kubelet/:/var/lib/kubelet:rw
+    - /var/lib/docker/:/var/lib/docker:ro
+    - /var/run/docker.sock:/var/run/docker.sock
+
+proxy:
+  image: gcr.io/google_containers/hyperkube:v1.3.7
+  net: host
+  pid: host
+  privileged: true
+  command: ['/hyperkube', 'proxy', '--master=http://127.0.0.1:8080', '--v=2']
+  privileged: true
+
+dashboard:
+  image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.4.0
+  net: host
+  ports:
+    - 9090:9090
