@@ -64,5 +64,8 @@ skydns:
 
 dashboard:
   image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.4.0
+  command: ['--apiserver-host=http://apiserver:8080']
   ports:
     - 9090:9090
+  links:
+    - apiserver
