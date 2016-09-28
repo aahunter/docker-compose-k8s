@@ -5,6 +5,8 @@ kubectl="docker run --rm \
                     --interactive \
                     --tty \
                     --net "host" \
+                    --workdir "/data" \
+                    -v "${PWD}:/data" \
                     -it gcr.io/google_containers/hyperkube:v1.3.7 /kubectl"
 
 exec $kubectl $*
